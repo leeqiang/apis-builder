@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/_mocha  test/ --bail"
+    "test": "mocha test"
   },
   "author": "leeqiang <leesumiir@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "inflection": "^1.12.0",
+    "ajv": "^6.4.0",
+    "lodash": "^4.17.5",
     "path-proxy": "^1.0.0",
     "promisify-call": "^2.0.4"
   },

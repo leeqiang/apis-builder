@@ -28,6 +28,14 @@ describe('Apis Builder Testing', () => {
           href: '/tests/{id}:a',
           method: 'GET',
           title: 'get-by-id'
+        }, {
+          description: '测试5: ajv',
+          href: '/tests/{_id}:ajv',
+          method: 'GET',
+          title: 'ajv',
+          properties: {
+            _otherId: { type: 'string', format: 'objectid' }
+          }
         }]
       }
     })
@@ -57,5 +65,16 @@ describe('Apis Builder Testing', () => {
     let sdk = new SDK()
     expect(typeof sdk.tests('123').getById === 'function').toBe(true)
     done()
+  })
+
+  it('should ok ajv', async function () {
+    let sdk = new SDK()
+    try {
+      await sdk.tests('123').ajv({
+        _otherId: '123'
+      })
+    } catch (err) {
+      expect(err.message.includes('_otherId')).toBe(true)
+    }
   })
 })

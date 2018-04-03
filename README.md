@@ -29,5 +29,5 @@ let profile = yield sdk.users().me().get()
 ```
 
 ## TODO
-- [ ] definitions 定义支持 ajv 进行参数校验
+- [x] definitions 定义支持 ajv 进行参数校验
 - [ ] 使用 proxy 进行重构
