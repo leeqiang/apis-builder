@@ -19,10 +19,15 @@ describe('Apis Builder Testing', () => {
           method: 'POST',
           title: 'say'
         }, {
-          description: '测试2',
+          description: '测试3',
           href: '/tests/{id}/hello/path',
           method: 'POST',
           title: 'say'
+        }, {
+          description: '测试4',
+          href: '/tests/{id}:a',
+          method: 'GET',
+          title: 'get-by-id'
         }]
       }
     })
@@ -45,6 +50,12 @@ describe('Apis Builder Testing', () => {
   it('should ok with reverse word#path', function (done) {
     let sdk = new SDK()
     expect(typeof sdk.tests('123').hello().$path === 'function').toBe(true)
+    done()
+  })
+
+  it('should ok get by id', function (done) {
+    let sdk = new SDK()
+    expect(typeof sdk.tests('123').getById === 'function').toBe(true)
     done()
   })
 })
