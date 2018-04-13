@@ -11,8 +11,7 @@
   "dependencies": {
     "ajv": "^6.4.0",
     "lodash": "^4.17.5",
-    "path-proxy": "^1.0.0",
-    "promisify-call": "^2.0.4"
+    "path-proxy": "^1.0.0"
   },
   "devDependencies": {
     "expect": "^22.4.3",

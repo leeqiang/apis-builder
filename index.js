@@ -1,7 +1,6 @@
-const pathProxy = require('path-proxy')
-const promisifyCall = require('promisify-call')
-const ajv = require('./ajv')
 const _ = require('lodash')
+const ajv = require('./ajv')
+const pathProxy = require('path-proxy')
 
 class Builder {
   constructor (baseObj, resources) {
@@ -27,19 +26,14 @@ class Builder {
     const path = action.href.replace(/\.json/gi, '').replace(/\.mime/gi, '').replace(/:.*/g, '').replace(/\/path$/g, '/$path')
     const constructor = pathProxy.pathProxy(this.baseObj, path.toLowerCase())
 
-    function impl (data, fn) {
+    function impl (data) {
       let requestPath = action.href
       const pathParams = action.href.match(/{[^}]+}/g) || []
-
-      if (typeof data === 'function') {
-        fn = data
-        data = undefined
-      }
 
       let err
       if (this.params.length !== pathParams.length) {
         err = new Error(`Invalid number of params in path (expected ${pathParams.length}, got ${this.params.length}).`)
-        return fn(err)
+        throw err
       }
 
       this.params.forEach((param) => {
@@ -49,23 +43,17 @@ class Builder {
       let schema = { properties }
       if (action.required) { schema.required = action.required }
       err = ajv(schema, data)
-      if (err) {
-        return fn(err)
-      }
+      if (err) throw err
 
       this.client = this.base
       if (typeof this.client[action.method.toLowerCase()] !== 'function') {
         console.error(`WARNING: 'this.client.${action.method.toLowerCase()}' is not a function`)
         return
       }
-      return this.client[action.method.toLowerCase()](requestPath, data, fn)
+      return this.client[action.method.toLowerCase()](requestPath, data)
     }
 
-    function promisifed (data, fn) {
-      return promisifyCall(this, impl, data, fn)
-    }
-
-    constructor.prototype[_.camelCase(actionName)] = promisifed
+    constructor.prototype[_.camelCase(actionName)] = impl
   }
 }
 
