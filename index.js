@@ -26,7 +26,9 @@ class Builder {
     const path = action.href.replace(/\.json/gi, '').replace(/\.mime/gi, '').replace(/:.*/g, '').replace(/\/path$/g, '/$path')
     const constructor = pathProxy.pathProxy(this.baseObj, path.toLowerCase())
 
-    function impl (data) {
+    function impl (data, requestOptions) {
+      if (_.isEmpty(requestOptions)) requestOptions = {}
+      if (!_.isObject(requestOptions)) requestOptions = {}
       let requestPath = action.href
       const pathParams = action.href.match(/{[^}]+}/g) || []
 
@@ -50,7 +52,20 @@ class Builder {
         console.error(`WARNING: 'this.client.${action.method.toLowerCase()}' is not a function`)
         return
       }
-      return this.client[action.method.toLowerCase()](requestPath, data)
+
+      switch (action.method.toLowerCase()) {
+        case 'get':
+        case 'del':
+        case 'delete':
+          requestOptions.qs = data
+          break
+        case 'post':
+        case 'put':
+          requestOptions.body = data
+          break
+      }
+
+      return this.client[action.method.toLowerCase()](requestPath, requestOptions)
     }
 
     constructor.prototype[_.camelCase(actionName)] = impl
